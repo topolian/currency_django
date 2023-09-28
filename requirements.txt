@@ -1,1 +1,9 @@
 django==4.2.5
+django-extensions
+ipython
+
+#flake8
+flake8==6.1.0
+flake8-builtins==2.1.0
+flake8-import-order==0.18.2
+flake8-print==5.0.0
