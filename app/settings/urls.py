@@ -14,32 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from currency.views import (
-    contacts_list, generate_password,
-    index, rate_create, rate_delete,
-    rate_details, rate_list, rate_update, source_create,
-    source_delete, source_details, source_list,
-    source_update)
 
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import include, path
+from django.views.generic import TemplateView
 
 urlpatterns = [
+
+    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+
     path('admin/', admin.site.urls),
 
-    path('', index),
-    path('gen-pass/', generate_password),
-    path('contacts_list/', contacts_list),
-    path('rate/list/', rate_list),
-    path('rate/create/', rate_create),
-    path('rate/details/<int:rate_id>/', rate_details),
-    path('rate/update/<int:rate_id>/', rate_update),
-    path('rate/delete/<int:rate_id>/', rate_delete),
-    path('source/list/', source_list),
-    path('source/create/', source_create),
-    path('source/details/<int:source_id>/', source_details),
-    path('source/update/<int:source_id>/', source_update),
-    path('source/delete/<int:source_id>/', source_delete),
+    path('currency/', include('currency.urls')),
+
+    path("__debug__/", include("debug_toolbar.urls")),
 
 ]
