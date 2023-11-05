@@ -2,13 +2,13 @@ from currency.forms import RateForm, SourceForm
 from currency.models import ContactUs, Rate, Source
 from currency.utils import generate_password as gen_pass
 
+from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import (
-    CreateView, DetailView, ListView, UpdateView,
-    DeleteView
-)
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView, DeleteView, DetailView, ListView, UpdateView,
+    )
 
 
 def generate_password(request):
@@ -31,13 +31,41 @@ def contacts_list(request):
     return render(request, 'contacts.html', context=context)
 
 
+class ContactUsCreateView(CreateView):
+    model = ContactUs
+    success_url = reverse_lazy('index')
+    template_name = 'contactus_create.html'
+    fields = (
+        'email_from',
+        'subject',
+        'message',
+    )
+
+    def form_valid(self, form):
+        email_from = form.cleaned_data['email_from']
+        subject = form.cleaned_data['subject']
+        message = form.cleaned_data['message']
+
+        full_email_message = f'''
+        Email From: {email_from}
+        Message: {message}
+        '''
+
+        send_mail(
+            subject,
+            full_email_message,
+            'pythontest.anya@gmail.com',
+            ['pythontest.anya@gmail.com'],
+            fail_silently=False,
+        )
+        return super().form_valid(form)
+
+
 # def rate_list(request):
 #     rates = Rate.objects.all()
-#
 #     context = {
 #         'rate_list': rates
 #     }
-#
 #     return render(request, 'rate_list.html', context=context)
 
 class RateListView(ListView):
